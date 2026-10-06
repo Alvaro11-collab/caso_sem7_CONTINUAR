@@ -1,0 +1,221 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace caso_sem7
+{
+    internal class Program
+    {
+        static int max = 100;
+        static string[] nombres = new string[max];
+        static double[] notas = new double[max];
+        static int contador = 0;
+
+        static public void Titulo()
+        {
+            Console.WriteLine("*****************************");
+            Console.WriteLine("Sistema de notas");
+            Console.WriteLine("*****************************");
+        }
+
+        static public void Registrarestudiante()
+        {
+            Console.WriteLine("\nRegistro de estudiante nuevo: ");
+            if (contador >= max)
+            {
+                Console.WriteLine("Llegamos a la capacidad maxima");
+                return;
+            }
+            Console.Write("Ingresar nombres: ");
+            string nombre = Console.ReadLine();
+            double nota;
+            while (true)
+            {
+                Console.Write("Ingresar nota: ");
+                nota = double.Parse(Console.ReadLine());
+                if (nota >= 0 && nota <= 20)
+                {
+                    break;
+                }
+                Console.WriteLine("Error: la nota debe ser [0-20]");
+            }
+            nombres[contador] = nombre;
+            notas[contador] = nota;
+            contador++;
+            Console.WriteLine("¡Estudiante registrado con éxito!");
+        }
+
+        static public void mostrar()
+        {
+            Console.WriteLine("\n***************Listado de Estudiantes***********");
+            if (contador == 0)
+            {
+                Console.WriteLine("No hay datos por mostrar");
+                return;
+            }
+            for (int i = 0; i < contador; i++)
+            {
+                Console.WriteLine((i + 1) + ": " + nombres[i] + " - Nota: " + notas[i]);
+            }
+        }
+
+        static public void Buscar_estudiante()
+        {
+            Console.WriteLine("\n***************Buscar Estudiante***********");
+            if (contador == 0)
+            {
+                Console.WriteLine("No hay estudiantes registrados.");
+                return;
+            }
+            Console.Write("Ingrese el nombre del estudiante a buscar: ");
+            string nombreBuscar = Console.ReadLine();
+            bool encontrado = false;
+
+            for (int i = 0; i < contador; i++)
+            {
+                if (nombres[i].Equals(nombreBuscar, StringComparison.OrdinalIgnoreCase))
+                {
+                    Console.WriteLine($"Estudiante encontrado -> Posición: {i + 1}, Nombre: {nombres[i]}, Nota: {notas[i]}");
+                    encontrado = true;
+                    break;
+                }
+            }
+            if (!encontrado)
+            {
+                Console.WriteLine("Estudiante no encontrado en el sistema.");
+            }
+        }
+
+        static public void Modificar_nota()
+        {
+            Console.WriteLine("\n***************Modificar Nota***********");
+            if (contador == 0)
+            {
+                Console.WriteLine("No hay estudiantes registrados.");
+                return;
+            }
+            Console.Write("Ingrese el nombre del estudiante a modificar: ");
+            string nombreBuscar = Console.ReadLine();
+            bool encontrado = false;
+
+            for (int i = 0; i < contador; i++)
+            {
+                if (nombres[i].Equals(nombreBuscar, StringComparison.OrdinalIgnoreCase))
+                {
+                    encontrado = true;
+                    Console.WriteLine($"Estudiante seleccionado: {nombres[i]} - Nota actual: {notas[i]}");
+
+                    double nuevaNota;
+                    while (true)
+                    {
+                        Console.Write("Ingrese la nueva nota [0-20]: ");
+                        nuevaNota = double.Parse(Console.ReadLine());
+                        if (nuevaNota >= 0 && nuevaNota <= 20)
+                        {
+                            break;
+                        }
+                        Console.WriteLine("Error: la nota debe ser [0-20]");
+                    }
+                    notas[i] = nuevaNota;
+                    Console.WriteLine("¡Nota modificada correctamente!");
+                    break;
+                }
+            }
+            if (!encontrado)
+            {
+                Console.WriteLine("Estudiante no encontrado.");
+            }
+        }
+
+        // CAMBIO AQUÍ: Método actualizado al ordenamiento por selección de tu clase
+        static public void Seleccion()
+        {
+            Console.WriteLine("\n***************Reporte ordenado por Selección (Mayor a Menor)***********");
+            if (contador == 0)
+            {
+                Console.WriteLine("No hay datos para ordenar.");
+                return;
+            }
+            string[] nombresOrdenados = new string[contador];
+            double[] notasOrdenadas = new double[contador];
+            Array.Copy(nombres, nombresOrdenados, contador);
+            Array.Copy(notas, notasOrdenadas, contador);
+            double auxNota;
+            string auxNombre;
+            for (int i = 0; i < contador - 1; i++)
+            {
+                int maximo = i; 
+                for (int j = i + 1; j < contador; j++)
+                {
+                    if (notasOrdenadas[j] > notasOrdenadas[maximo])
+                    {
+                        maximo = j;
+                    }
+                }
+
+                auxNota = notasOrdenadas[i];
+                notasOrdenadas[i] = notasOrdenadas[maximo];
+                notasOrdenadas[maximo] = auxNota;
+                auxNombre = nombresOrdenados[i];
+                nombresOrdenados[i] = nombresOrdenados[maximo];
+                nombresOrdenados[maximo] = auxNombre;
+            }
+            for (int i = 0; i < contador; i++)
+            {
+                Console.WriteLine((i + 1) + ": " + nombresOrdenados[i] + " - Nota: " + notasOrdenadas[i]);
+            }
+        }
+
+        static void Main(string[] args)
+        {
+            Titulo();
+            int opc = 0;
+            while (opc != 6)
+            {
+                Console.WriteLine("\n************MENU PRINCIPAL**********");
+                Console.WriteLine("[1] Registrar estudiantes");
+                Console.WriteLine("[2] Buscar estudiante");
+                Console.WriteLine("[3] Modificar nota");
+                Console.WriteLine("[4] Mostrar lista sin ordenar");
+                Console.WriteLine("[5] Mostrar reporte ordenado por selección"); // Nombre del menú actualizado
+                Console.WriteLine("[6] Salir");
+                Console.Write("Ingresar opcion: ");
+
+                opc = int.Parse(Console.ReadLine());
+
+                if (opc < 1 || opc > 6)
+                {
+                    Console.WriteLine("Error, opcion fuera del rango [1-6]");
+                    continue;
+                }
+
+                switch (opc)
+                {
+                    case 1:
+                        Registrarestudiante();
+                        break;
+                    case 2:
+                        Buscar_estudiante();
+                        break;
+                    case 3:
+                        Modificar_nota();
+                        break;
+                    case 4:
+                        mostrar();
+                        break;
+                    case 5:
+                        Seleccion(); 
+                        break;
+                    case 6:
+                        Console.WriteLine("Gracias por usar el sistema");
+                        break;
+                    default:
+                        Console.WriteLine("Opcion incorrecta...!!!");
+                        break;
+                }
+            }
+        }
+    }
+}
